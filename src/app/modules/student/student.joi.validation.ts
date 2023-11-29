@@ -27,6 +27,11 @@ const userNameSchema = Joi.object({
   // Define Joi schema for Student
   const studentValidationSchema = Joi.object({
     id: Joi.string().required(),
+    password: Joi.string().required().max(20)
+    .messages({
+      'any.required': 'Password is required',
+      'string.max': 'Password cannot be more than 20 characters',
+    }),
     name: userNameSchema.required(),
     gender: Joi.string().valid('male', 'female', 'other').required(),
     dateOfBirth: Joi.string(),
@@ -40,6 +45,7 @@ const userNameSchema = Joi.object({
     localGuardian: localGuardianSchema.required(),
     profileImg: Joi.string(),
     isActive: Joi.string().valid('active', 'blocked').default('active'),
+    isDeleted: Joi.boolean(),
   });
 
   export default studentValidationSchema
