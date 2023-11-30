@@ -5,10 +5,8 @@ import {
   TStudent,
   TUserName,
   StudentModel,
-} from './student/student.interface';
+} from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -84,11 +82,12 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: true, unique: true },
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    maxlength: [20, 'Password can not be more 20 character']
+  id: { type: String, required: [true, 'ID is required'], unique: true },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User ID is required'],
+    unique: true,
+    ref: 'User'
   },
   name: {
     type: userNameSchema,
@@ -128,11 +127,6 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     required: true,
   },
   profileImg: { type: String },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
-  },
   isDeleted: {
     type: Boolean,
     default: false,
@@ -149,22 +143,6 @@ studentSchema.virtual('fullName').get(function(){
   return this.name.firstName + ' ' + this.name.middleName + ' ' + this.name.lastName;
 })
 
-
-// pre save middleware / hooks
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook: we will save the data');
-  const user = this; //this refers to document
-  // hashing password and save into database
-  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_round))
-  next();
-});
-
-// post save middleware / hooks
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
-
 // Query middleware 
 studentSchema.pre('find', function(next){
   this.find({isDeleted: {$ne: true}})
@@ -180,13 +158,6 @@ studentSchema.pre('aggregate', function(next){
   this.pipeline().unshift({$match: {isDeleted: {$ne: true}}});
   next();
 })
-
-//creating a custom instance method
-// studentSchema.methods.isUserExists = async function (id: string){
-//   const existingUser = await Student.findOne({id});
-
-//   return existingUser;
-// }
 
 // creating a custom static method
 studentSchema.statics.isUserExists = async function (id: string) {
