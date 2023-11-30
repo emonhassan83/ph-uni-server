@@ -6,6 +6,7 @@ import { StudentRoutes } from './app/modules/student/stutdent.route';
 import { UserRoutes } from './app/modules/user/user.route';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
+import router from './app/routes';
 const app: Application = express();
 
 // parser
@@ -13,16 +14,15 @@ app.use(express.json());
 app.use(cors());
 
 // application routes
-app.use('/api/v1/students', StudentRoutes);
-app.use('/api/v1/users', UserRoutes);
+app.use('/api/v1', router);
 
 
-const getAController = (req: Request, res: Response) => {
+const test = (req: Request, res: Response) => {
   const a = 10;
   res.send(a);
 }
 
-app.get('/', getAController);
+app.get('/', test);
 
 // use global error handler middleware
 app.use(globalErrorHandler);
