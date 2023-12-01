@@ -8,7 +8,7 @@ import {
 } from './student.interface';
 import validator from 'validator';
 
-const userNameSchema = new Schema<TUserName>({
+const userNameValidationSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: [true, 'First name is required'],
@@ -35,7 +35,7 @@ const userNameSchema = new Schema<TUserName>({
   },
 });
 
-const guardianSchema = new Schema<TGuardian>({
+const guardianValidationSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -62,7 +62,7 @@ const guardianSchema = new Schema<TGuardian>({
   },
 });
 
-const localGuardianSchema = new Schema<TLocalGuardian>({
+const localGuardianValidationSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -90,7 +90,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     ref: 'User'
   },
   name: {
-    type: userNameSchema,
+    type: userNameValidationSchema,
     required: true,
   },
   gender: {
@@ -110,7 +110,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     validate: (value: string) => validator.isEmail(value),
     message: '{VALUE} is not a valid',
   },
-  contractNo: { type: String, required: true },
+  contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
   bloodGroup: {
     type: String,
@@ -119,11 +119,11 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
   guardian: {
-    type: guardianSchema,
+    type: guardianValidationSchema,
     required: true,
   },
   localGuardian: {
-    type: localGuardianSchema,
+    type: localGuardianValidationSchema,
     required: true,
   },
   profileImg: { type: String },
