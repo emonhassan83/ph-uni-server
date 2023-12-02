@@ -1,12 +1,14 @@
 import { z } from 'zod';
+import { AcademicSemesterCode, Months, academicSemesterName } from './academicSemester.constant';
 
 const academicSemesterValidationSchema = z.object({
-  password: z
-    .string({
-      invalid_type_error: 'Password must be string',
-    })
-    .max(20, { message: 'Password can not be more 20 characters' })
-    .optional(),
+ body: z.object({
+  name: z.enum([...academicSemesterName] as [string, ...string[]]),
+  year: z.string(),
+  code: z.enum([...AcademicSemesterCode] as [string, ...string[]]),
+  startMonth: z.enum([...Months] as [string, ...string[]]),
+  endMonth: z.enum([...Months] as [string, ...string[]]),
+ })
 });
 
 export const  AcademicSemesterValidation = {
