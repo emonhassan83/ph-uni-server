@@ -7,7 +7,6 @@ import { AcademicSemesterService } from './academicSemester.service';
 const createAcademicSemester: RequestHandler = catchAsync(async (req, res) => {
   const result = await AcademicSemesterService.createAcademicSemesterIntoDB(req.body);
 
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
