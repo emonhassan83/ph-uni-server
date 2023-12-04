@@ -13,7 +13,7 @@ const createStudentIntoDB = async( password: string ,studentData: TStudent) => {
     // set userData role
     userData.role = "student";
 
-    // set manually generate id
+    // set generate id
     userData.id = '2030100001';
 
     // create a user
