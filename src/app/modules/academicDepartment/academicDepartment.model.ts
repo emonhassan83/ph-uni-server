@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
 import { TAcademicDepartment } from './academicDepartment.interface';
-
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   {
@@ -11,36 +12,39 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
       unique: true,
     },
     academicFaculty: {
-        type: Schema.Types.ObjectId,
-        ref: 'AcademicFaculty'
-    }
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
+    },
   },
   {
     timestamps: true,
   },
 );
 
-academicDepartmentSchema.pre('save', async function (next){
-    const isDepartmentExist = await AcademicDepartment.findOne({
-        name: this.name,
-      });
-    
-      if (isDepartmentExist) {
-        throw new Error('This department is already exist');
-      }
+academicDepartmentSchema.pre('save', async function (next) {
+  const isDepartmentExist = await AcademicDepartment.findOne({
+    name: this.name,
+  });
 
-      next();
-})
+  if (isDepartmentExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This department is already exist');
+  }
 
-academicDepartmentSchema.pre('findOneAndUpdate', async function (next){
-    const query = this.getQuery();
-    const isDepartmentExist = await AcademicDepartment.findOne(query);
+  next();
+});
 
-    if (!isDepartmentExist) {
-        throw new Error('This department dose not exist');
-      }
+academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
+  const query = this.getQuery();
+  const isDepartmentExist = await AcademicDepartment.findOne(query);
 
-      next();
-})
+  if (!isDepartmentExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This department dose not exist');
+  }
 
-export const AcademicDepartment = model<TAcademicDepartment>('AcademicDepartment', academicDepartmentSchema);
+  next();
+});
+
+export const AcademicDepartment = model<TAcademicDepartment>(
+  'AcademicDepartment',
+  academicDepartmentSchema,
+);
