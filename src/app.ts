@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import { StudentRoutes } from './app/modules/student/stutdent.route';
+import { StudentRoutes } from './app/modules/student/student.route';
 import { UserRoutes } from './app/modules/user/user.route';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
