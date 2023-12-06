@@ -3,7 +3,7 @@ import { Student } from "../student/student.model";
 import { TStudent } from "../student/student.interface";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
-import { academicSemester } from "../academicSemester/acdemicSemister.model";
+import { academicSemester } from "../academicSemester/academicSemester.model";
 import { generateStudentId } from "./user.utils";
 
 const createStudentIntoDB = async( password: string ,payload: TStudent) => {
