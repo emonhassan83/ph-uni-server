@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import config from '../../config';
 import { Student } from '../student/student.model';
 import { TStudent } from '../student/student.interface';
@@ -54,10 +55,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
       return newStudent;
   
-  } catch (err) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error('Failed to create user');
+    throw new Error(err);
   }
 };
 
