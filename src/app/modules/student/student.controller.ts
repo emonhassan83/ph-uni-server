@@ -3,11 +3,13 @@ import { studentServices } from './student.service';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
+import { RequestHandler } from 'express';
 // import createStudentValidationSchema from './student.zod.validation';
 // import createStudentValidationSchema from './student.joi.validation';
 
-const getAllStudents = catchAsync(async (req, res) => {
-    const result = await studentServices.getAllStudentsFromDB();
+const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
+  
+    const result = await studentServices.getAllStudentsFromDB(req.query);
     res.status(200).json({
       success: true,
       message: 'Student are retrieved successfully',
