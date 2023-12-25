@@ -5,6 +5,7 @@ import { FacultyServices } from './faculty.service';
 
 
 const getSingleFaculty = catchAsync(async (req, res) => {
+  
   const { id } = req.params;
   const result = await FacultyServices.getSingleFacultyFromDB( id );
 
@@ -17,7 +18,6 @@ const getSingleFaculty = catchAsync(async (req, res) => {
 });
 
 const getAllFaculties = catchAsync(async (req, res) => {
-  
   const result = await FacultyServices.getAllFacultiesFromDB(req.query);
 
   sendResponse(res, {
