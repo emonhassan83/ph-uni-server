@@ -4,7 +4,7 @@ import { Student } from '../student/student.model';
 import { TStudent } from '../student/student.interface';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { academicSemester } from '../academicSemester/academicSemester.model';
+import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { generateAdminId, generateFacultyId, generateStudentId } from './user.utils';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
@@ -23,7 +23,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   userData.role = 'student';
 
   // find academic semester info
-  const admissionSemester = await academicSemester.findById(
+  const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
   );
 

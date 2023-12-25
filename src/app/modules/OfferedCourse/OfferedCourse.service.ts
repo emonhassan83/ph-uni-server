@@ -144,7 +144,7 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
-const getSingleOfferedCourseFromDB = async (id: string) => {
+const getSingleOfferedCourseFromDB = async (id: Record<string, undefined>) => {
   const offeredCourse = await OfferedCourse.findById(id);
 
   if (!offeredCourse) {

@@ -7,6 +7,7 @@ import { RegistrationStatus } from './semesterRegistration.constant';
 import { TSemesterRegistration } from './semesterRegistration.interface';
 import { SemesterRegistration } from './semesterRegister.model';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
+import { OfferedCourse } from '../OfferedCourse/OfferedCourse.model';
 
 
 const createSemesterRegistrationIntoDB = async (
@@ -152,7 +153,7 @@ const updateSemesterRegistrationIntoDB = async (
 const deleteSemesterRegistrationFromDB = async (id: string) => {
   /** 
   * Step1: Delete associated offered courses.
-  * Step2: Delete semester registraton when the status is 
+  * Step2: Delete semester registration when the status is 
   'UPCOMING'.
   **/
 
@@ -199,13 +200,13 @@ const deleteSemesterRegistrationFromDB = async (id: string) => {
       );
     }
 
-    const deletedSemisterRegistration =
+    const deletedSemesterRegistration =
       await SemesterRegistration.findByIdAndDelete(id, {
         session,
         new: true,
       });
 
-    if (!deletedSemisterRegistration) {
+    if (!deletedSemesterRegistration) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
         'Failed to delete semester registration !',
