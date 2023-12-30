@@ -6,15 +6,15 @@ import catchAsync from '../../utils/catchAsync';
 
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
   const { password, student: studentData } = req.body;
-
+ 
   // creating a  schema validation using joi
-  //   const { error, value } = createStudentValidationSchema.validate(studentData);
+    // const { error, value } = createStudentValidationSchema.validate(studentData);
 
   // data validating using zod
   // const zodParsedData = createStudentValidationSchema.parse(studentData);
 
   // will call service function to send this data
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+  const result = await UserServices.createStudentIntoDB(req.file, password, studentData);
 
   // send response
   // res.status(200).json({
@@ -28,6 +28,7 @@ const createStudent: RequestHandler = catchAsync(async (req, res) => {
     success: true,
     message: 'Student is created successfully',
     data: result,
+    // data: null,
   });
 });
 
