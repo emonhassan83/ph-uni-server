@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
-import { createToken } from './auth.utils';
+import { createToken, verifyToken } from './auth.utils';
+import { sendEmail } from '../../utils/sendMail';
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist
@@ -108,10 +109,7 @@ const changePassword = async (
 
 const refreshToken = async (token: string) => {
   // checking if the given token is valid
-  const decoded = jwt.verify(
-    token,
-    config.jwt_refresh_secret as string,
-  ) as JwtPayload;
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string);
 
   const { userId, iat } = decoded;
 
@@ -185,11 +183,9 @@ const forgetPassword = async (userId: string) => {
   );
 
   // const resetUILink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken} `;
-  const resetUILink = `http://localhost:3000?id=${user.id}&token=${resetToken} `;
+  const resetUILink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken} `;
 
-  // sendEmail(user.email, resetUILink);
-
-  console.log(resetUILink);
+  sendEmail(user.email, resetUILink);
 };
 
 const resetPassword = async (
@@ -198,33 +194,24 @@ const resetPassword = async (
 ) => {
   // checking if the user is exist
   const user = await User.isUserExistsByCustomId(payload?.id);
-
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
   }
   // checking if the user is already deleted
   const isDeleted = user?.isDeleted;
-
   if (isDeleted) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
   }
 
   // checking if the user is blocked
   const userStatus = user?.status;
-
   if (userStatus === 'blocked') {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
   }
 
-  const decoded = jwt.verify(
-    token,
-    config.jwt_access_secret as string,
-  ) as JwtPayload;
-
-  //localhost:3000?id=A-0001&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDI4NTA2MTcsImV4cCI6MTcwMjg1MTIxN30.-T90nRaz8-KouKki1DkCSMAbsHyb9yDi0djZU3D6QO4
+  const decoded = verifyToken(token, config.jwt_access_secret as string);
 
   if (payload.id !== decoded.userId) {
-    console.log(payload.id, decoded.userId);
     throw new AppError(httpStatus.FORBIDDEN, 'You are forbidden!');
   }
 
