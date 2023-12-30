@@ -8,7 +8,6 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import { studentSearchableFields } from './student.constant';
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-
   // const queryObj = { ...query }; // copying req.query object so that we can mutate the copy object
   // const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
   // let searchTerm = ''; // SET DEFAULT VALUE
@@ -94,7 +93,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   const studentQuery = new QueryBuilder(
     Student.find()
-    .populate('user')
+      .populate('user')
       .populate('admissionSemester')
       .populate({
         path: 'academicDepartment',
@@ -111,11 +110,16 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await studentQuery.modelQuery;
-  return result;
+  const meta = await studentQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findById( id )
+  const result = await Student.findById(id)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -163,7 +167,7 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
     }
   }
 
-  const result = await Student.findByIdAndUpdate( id , modifiedUpdatedData, {
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
@@ -176,7 +180,7 @@ const deleteStudentFromDB = async (id: string) => {
     session.startTransaction();
 
     const deletedStudent = await Student.findByIdAndUpdate(
-       id ,
+      id,
       { isDeleted: true },
       { new: true, session },
     );
@@ -189,7 +193,7 @@ const deleteStudentFromDB = async (id: string) => {
     }
 
     const deletedUser = await User.findOneAndUpdate(
-       userId ,
+      userId,
       { isDeleted: true },
       { new: true, session },
     );
