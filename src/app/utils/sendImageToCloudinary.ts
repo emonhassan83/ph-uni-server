@@ -2,6 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import config from '../config';
 import multer from 'multer';
 import fs from 'fs';
+import { UploadApiResponse } from 'cloudinary';
 
 cloudinary.config({
   cloud_name: config.cloudinary_cloud_name,
@@ -9,16 +10,16 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-export const sendImageToCloudinary = (imageName: string, path: string) => {
+export const sendImageToCloudinary = (imageName: string, path: string): Promise<Record<string, unknown>> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       path,
-      { public_id: imageName },
+      { public_id: imageName.trim() },
       function (error, result) {
         if (error) {
           reject(error);
         }
-        resolve(result);
+        resolve(result as UploadApiResponse);
         // delete a file asynchronously
         fs.unlink(path, (err) => {
           if (err) {

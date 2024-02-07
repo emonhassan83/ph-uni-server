@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
 import { Server } from 'http';
+import seedSuperAdmin from './app/DB';
 
 let server: Server;
 
@@ -9,6 +10,8 @@ async function main() {
   try {
     await mongoose.connect(config.database_url as string);
 
+      // ? create super admin automatic after create database
+      seedSuperAdmin();
     // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
     server = app.listen(config.port, () => {
       console.log(`app is listening on port ${config.port}`);

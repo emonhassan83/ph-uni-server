@@ -24,10 +24,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
         config.jwt_access_secret as string,
       ) as JwtPayload;
     } catch (error) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'Unauthorized Access!',
-      );
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Unauthorized Access!');
     }
 
     const { role, userId, iat } = decoded;
